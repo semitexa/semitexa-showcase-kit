@@ -1,0 +1,25 @@
+{
+    "name": "semitexa/showcase-kit",
+    "description": "Shared structural layer (layout, feature-tree, L1/L2/L3 feature page, components) for docs-backed feature-showcase sites. Consumed by semitexa-demo and semitexa-platform-site; only palette and content differ per site.",
+    "type": "semitexa-module",
+    "autoload": {
+        "psr-4": {
+            "App\\Modules\\ShowcaseKit\\": "src/"
+        }
+    },
+    "extra": {
+        "semitexa-module": {
+            "name": "ShowcaseKit",
+            "template_alias": "project-layouts-ShowcaseKit"
+        }
+    },
+    "license": "MIT",
+    "keywords": [
+        "semitexa",
+        "showcase",
+        "layouts",
+        "feature-pages",
+        "docs-site"
+    ],
+    "homepage": "https://semitexa.com"
+}

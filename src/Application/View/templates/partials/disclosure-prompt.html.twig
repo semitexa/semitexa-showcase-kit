@@ -1,0 +1,22 @@
+{#
+ # ShowcaseKit disclosure-prompt partial.
+ #
+ # Plain data-driven replacement for the demo's `component('demo-disclosure-prompt')`.
+ # Drives progressive reveal via the kit disclosure JS (data-disclosure-trigger).
+ #
+ # Variables:
+ #   label   (string) prompt text; a trailing "→" is stripped (arrow is rendered separately)
+ #   variant (string) "learnMore" (prominent CTA) | "deepDive" (muted link)
+ #   target  (string) DOM id of the [data-expandable] / [data-drawer] element to toggle
+ #}
+{% set normalizedLabel = label ends with '→' ? label|slice(0, -1)|trim : label %}
+<button
+  type="button"
+  class="disclosure-prompt disclosure-prompt--{{ variant }}"
+  aria-controls="{{ target }}"
+  aria-expanded="false"
+  data-disclosure-trigger="{{ target }}"
+>
+  <span class="disclosure-prompt__label">{{ normalizedLabel }}</span>
+  <span class="disclosure-prompt__arrow" aria-hidden="true">→</span>
+</button>

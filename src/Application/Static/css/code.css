@@ -1,0 +1,90 @@
+/* ==========================================================================
+   ShowcaseKit — Code block
+   Ported from demo code-highlight.css (subset used by the feature template:
+   code-block frame/header/label/pre/code + syntax tokens).
+
+   NOTE ON COLOUR: a code block is a deliberate dark "editor" surface that is
+   the SAME regardless of the active skin (the demo did this too). The surface
+   background is the skin-driven --sk-code-bg token. The editor-internal greys
+   and the .code-token--* syntax palette are an intentional fixed code-editor
+   theme, NOT the site palette, so they stay literal (flagged in the report).
+   ========================================================================== */
+
+.code-block {
+  margin-bottom: 1.75rem;
+  border: 1px solid var(--sk-glass-stroke);
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--sk-code-bg);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(18px) saturate(135%);
+}
+
+.code-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1.1rem;
+  background: rgba(255, 255, 255, 0.035);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.code-block__file {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.code-block__label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f7e7d7;
+  font-family: var(--sk-font-mono);
+}
+
+.code-block__file-note {
+  font-size: 0.72rem;
+  color: #8ea0bb;
+}
+
+.code-block__pre {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.code-block__code {
+  display: block;
+  min-width: max-content;
+  font-family: var(--sk-font-mono);
+  font-size: 0.84rem;
+  line-height: 1.75;
+  color: #e2e8f0;
+  white-space: pre;
+  tab-size: 4;
+}
+
+/* --- Syntax highlight palette (fixed editor theme, skin-independent) --- */
+.code-token--tag { color: #ff8a5b; }
+.code-token--keyword { color: #8ad3ff; font-weight: 600; }
+.code-token--literal { color: #7be0d7; font-weight: 600; }
+.code-token--attribute-marker { color: #ffbf69; font-weight: 700; }
+.code-token--comment { color: #7f8ba3; font-style: italic; }
+.code-token--variable { color: #ffb4d7; }
+.code-token--string { color: #b5f28f; }
+.code-token--number { color: #ffc784; }
+.code-token--name { color: #d2b8ff; }
+.code-token--type { color: #ffd6fa; }
+.code-token--function { color: #ffd166; font-weight: 600; }
+.code-token--identifier { color: #d3deef; }
+.code-token--operator,
+.code-token--punctuation { color: #8a9bb7; }
+
+@media (max-width: 640px) {
+  .code-block__code {
+    font-size: 0.78rem;
+  }
+}

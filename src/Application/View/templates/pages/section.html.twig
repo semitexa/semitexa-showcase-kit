@@ -1,0 +1,112 @@
+{#
+ # ShowcaseKit section page — section overview + feature card grid.
+ #
+ # Extends the kit base layout. Neutral, data-driven port of the demo's
+ # section page: section header (back link, icon, title, live-feature count,
+ # summary) followed by either grouped feature cards or a flat feature grid.
+ # No demo-specific manifesto/marketing blocks — those were demo CONTENT.
+ #
+ # See CONTRACT.md for the full data contract.
+ #}
+{% extends '@project-layouts-ShowcaseKit/layouts/showcase.html.twig' %}
+
+{% block head %}
+  {{ parent() }}
+  <link rel="stylesheet" href="/assets/ShowcaseKit/css/feature.css">
+  <link rel="stylesheet" href="/assets/ShowcaseKit/css/nav.css">
+{% endblock %}
+
+{% block sk_sidebar %}
+  {% include '@project-layouts-ShowcaseKit/partials/feature-tree.html.twig' with {
+    sections: sections|default([]),
+    layers: layers|default(null),
+    currentSection: section|default(null),
+    currentSlug: null,
+    navMode: navMode|default(null),
+    activeLayerKey: activeLayerKey|default(null),
+  } only %}
+{% endblock %}
+
+{% block showcase_main %}
+  {% set _features = features|default([]) %}
+  {% set _groups = groups|default([]) %}
+  <div class="demo-section-page">
+
+    <header class="demo-section-page__header">
+      {% if backHref is defined and backHref %}
+        <a href="{{ backHref }}" class="demo-section-page__back">← {{ backLabel|default('All sections') }}</a>
+      {% endif %}
+      <div class="demo-section-page__masthead">
+        <div class="demo-section-page__title-row">
+          {% if sectionIcon is defined and sectionIcon %}
+            <span class="demo-section-page__icon" aria-hidden="true">{{ sectionIcon }}</span>
+          {% endif %}
+          <div>
+            <p class="demo-section-page__eyebrow">{{ sectionEyebrow|default('Section Overview') }}</p>
+            <h1 class="demo-section-page__title">{{ sectionLabel|default('') }}</h1>
+          </div>
+        </div>
+        <div class="demo-section-page__stat">
+          <span class="demo-section-page__stat-value">{{ _features|length }}</span>
+          <span class="demo-section-page__stat-label">{{ statLabel|default('live features') }}</span>
+        </div>
+      </div>
+      {% if sectionSummary is defined and sectionSummary %}
+        <p class="demo-section-page__summary">{{ sectionSummary }}</p>
+      {% endif %}
+    </header>
+
+    {% if _features|length > 0 %}
+      <section class="demo-section-page__features">
+        {% if featuresEyebrow is defined or featuresIntro is defined %}
+          <div class="demo-block-heading demo-block-heading--tight">
+            {% if featuresEyebrow is defined and featuresEyebrow %}
+              <p class="demo-block-heading__eyebrow">{{ featuresEyebrow }}</p>
+            {% endif %}
+            {% if featuresIntro is defined and featuresIntro %}
+              <p class="demo-block-heading__text">{{ featuresIntro }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if _groups is not empty %}
+          <div class="demo-section-page__groups">
+            {% for group in _groups %}
+              <section class="demo-section-page__group">
+                <div class="demo-section-page__group-head">
+                  <h3 class="demo-section-page__group-title">{{ group.label }}</h3>
+                  <span class="demo-section-page__group-count">{{ group.featureCount|default(group.features|default([])|length) }}</span>
+                </div>
+                <div class="demo-sections__grid">
+                  {% for feature in group.features|default([]) %}
+                    {% include '@project-layouts-ShowcaseKit/partials/_feature-card.html.twig' with {
+                      feature: feature,
+                      sectionLabel: sectionLabel|default((section|default(''))|upper),
+                    } only %}
+                  {% endfor %}
+                </div>
+              </section>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="demo-sections__grid">
+            {% for feature in _features %}
+              {% include '@project-layouts-ShowcaseKit/partials/_feature-card.html.twig' with {
+                feature: feature,
+                sectionLabel: sectionLabel|default((section|default(''))|upper),
+              } only %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </section>
+    {% else %}
+      <p class="demo-section-page__empty">{{ emptyLabel|default('No features in this section yet.') }}</p>
+    {% endif %}
+
+  </div>
+{% endblock %}
+
+{# feature-tree.js is already included once by the base layout
+   (layouts/showcase.html.twig). Do NOT re-add it here — a second include
+   double-binds the toggle handlers, so a click expands then immediately
+   collapses the section (sub-items appear not to open). #}

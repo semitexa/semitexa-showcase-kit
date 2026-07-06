@@ -1,0 +1,118 @@
+{#
+ # ShowcaseKit home page — landing for a docs-backed showcase site.
+ #
+ # Extends the kit base layout (`showcase.html.twig`). Renders a hero followed
+ # by the catalog sections as feature-card groups (one group per section,
+ # reusing `partials/_feature-card.html.twig` and the section-page card grid
+ # patterns). The sidebar is filled with the shared feature-tree partial.
+ #
+ # Palette is 100% skin-driven via --sk-* tokens; this page adds no content of
+ # its own — everything comes from the variables below.
+ #
+ # Variables (all optional unless noted):
+ #   hero            map      Landing hero:
+ #                            { eyebrow?, title?, lede? }
+ #   sections        list     REQUIRED. Catalog sections, each rendered as a
+ #                            feature-card group. Section shape:
+ #                            { key, label, sidebarLabel?, icon?, eyebrow?, summary?,
+ #                              href?, features: [{ slug, title, summary?, href?,
+ #                              opensInNewTab?, cta? }] }
+ #   sectionsEyebrow string   Eyebrow above the sections block (default 'Capabilities')
+ #   sectionsIntro   string   Intro text above the sections block
+ #   emptyLabel      string   Shown when there are no sections
+ #   layers / navMode / activeLayerKey
+ #                   —        Sidebar tree data (forwarded to feature-tree)
+ #}
+{% extends '@project-layouts-ShowcaseKit/layouts/showcase.html.twig' %}
+
+{% block head %}
+  {{ parent() }}
+  <link rel="stylesheet" href="/assets/ShowcaseKit/css/feature.css">
+  <link rel="stylesheet" href="/assets/ShowcaseKit/css/nav.css">
+{% endblock %}
+
+{% block sk_sidebar %}
+  {% include '@project-layouts-ShowcaseKit/partials/feature-tree.html.twig' with {
+    sections: sections|default([]),
+    layers: layers|default(null),
+    currentSection: null,
+    currentSlug: null,
+    navMode: navMode|default(null),
+    activeLayerKey: activeLayerKey|default(null),
+  } only %}
+{% endblock %}
+
+{% block showcase_main %}
+  {% set _sections = sections|default([]) %}
+  {% set _hero = hero|default({}) %}
+  <div class="demo-section-page demo-home-page">
+
+    {% if _hero.title is defined or _hero.eyebrow is defined or _hero.lede is defined %}
+      <header class="demo-section-page__header">
+        <div class="demo-section-page__masthead">
+          <div class="demo-section-page__title-row">
+            <div>
+              {% if _hero.eyebrow is defined and _hero.eyebrow %}
+                <p class="demo-section-page__eyebrow">{{ _hero.eyebrow }}</p>
+              {% endif %}
+              {% if _hero.title is defined and _hero.title %}
+                <h1 class="demo-section-page__title">{{ _hero.title }}</h1>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% if _hero.lede is defined and _hero.lede %}
+          <p class="demo-section-page__summary">{{ _hero.lede }}</p>
+        {% endif %}
+      </header>
+    {% endif %}
+
+    {% if _sections|length > 0 %}
+      <section class="demo-section-page__features">
+        {% if sectionsEyebrow is defined or sectionsIntro is defined %}
+          <div class="demo-block-heading demo-block-heading--tight">
+            <p class="demo-block-heading__eyebrow">{{ sectionsEyebrow|default('Capabilities') }}</p>
+            {% if sectionsIntro is defined and sectionsIntro %}
+              <p class="demo-block-heading__text">{{ sectionsIntro }}</p>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="demo-section-page__groups">
+          {% for section in _sections %}
+            <section class="demo-section-page__group">
+              <div class="demo-section-page__group-head">
+                <h3 class="demo-section-page__group-title">
+                  {% if section.icon is defined and section.icon %}
+                    <span class="demo-section-page__icon" aria-hidden="true">{{ section.icon }}</span>
+                  {% endif %}
+                  <a href="{{ section.href|default('#') }}">{{ section.label|default(section.key) }}</a>
+                </h3>
+                <span class="demo-section-page__group-count">{{ section.features|default([])|length }}</span>
+              </div>
+              {% if section.summary is defined and section.summary %}
+                <p class="demo-section-page__group-summary">{{ section.summary }}</p>
+              {% endif %}
+              <div class="demo-sections__grid">
+                {% for feature in section.features|default([]) %}
+                  {% include '@project-layouts-ShowcaseKit/partials/_feature-card.html.twig' with {
+                    feature: feature,
+                    sectionLabel: section.eyebrow|default(section.label|default('')),
+                  } only %}
+                {% endfor %}
+              </div>
+            </section>
+          {% endfor %}
+        </div>
+      </section>
+    {% else %}
+      <p class="demo-section-page__empty">{{ emptyLabel|default('No sections yet.') }}</p>
+    {% endif %}
+
+  </div>
+{% endblock %}
+
+{# feature-tree.js is already included once by the base layout
+   (layouts/showcase.html.twig). Do NOT re-add it here — a second include
+   double-binds the toggle handlers, so a click expands then immediately
+   collapses the section (sub-items appear not to open). #}

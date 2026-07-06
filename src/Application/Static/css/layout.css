@@ -1,0 +1,210 @@
+/*
+ * ShowcaseKit structural layout CSS (vertical-slice subset: header / shell /
+ * sidebar / main / footer). Palette comes entirely from `--sk-*` tokens
+ * (see tokens.css), which resolve to the active skin's `--ui-*` values.
+ */
+body {
+  margin: 0;
+  background: var(--sk-bg);
+  color: var(--sk-text);
+  font-family: var(--sk-font);
+}
+
+/* ---- Header ---- */
+.sk-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  /* Align header content to the same centred column as `.sk-shell` (max-width
+   * 1200px, 1.75rem inner padding), while the sticky bar itself stays
+   * full-width. Below 1200px the max() falls back to the plain 1.75rem. */
+  padding-block: 0.85rem;
+  padding-inline: max(1.75rem, calc((100% - 1200px) / 2 + 1.75rem));
+  background: var(--sk-header-bg);
+  border-bottom: 1px solid var(--sk-header-border);
+  backdrop-filter: var(--sk-glass-blur);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sk-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--sk-text);
+  font-weight: 700;
+}
+
+.sk-brand__mark { color: var(--sk-accent); }
+
+.sk-topnav {
+  display: flex;
+  gap: 1rem;
+  margin-inline-start: auto;
+}
+
+.sk-topnav a {
+  color: var(--sk-text-muted);
+  text-decoration: none;
+}
+
+.sk-topnav a[aria-current="page"],
+.sk-topnav a:hover { color: var(--sk-accent); }
+
+/* Colour-mode control, rendered as a labelled switch (consistent across every
+ * showcase site). The label is the button text; `::after` is the track with an
+ * accent knob that slides L (light) ↔ R (dark) via `data-skin-mode`. Fully
+ * `--sk-*` token-driven, so each skin colours its own knob. */
+.sk-skin-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid var(--sk-border);
+  background: transparent;
+  color: var(--sk-text-muted);
+  border-radius: 100px;
+  padding: 0.3rem 0.4rem 0.3rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sk-skin-toggle:hover { color: var(--sk-text); border-color: var(--sk-border-strong); }
+
+.sk-skin-toggle::after {
+  content: "";
+  flex: none;
+  width: 2.6rem;
+  height: 1.4rem;
+  border-radius: 100px;
+  border: 1px solid var(--sk-border);
+  background-color: var(--sk-accent-soft);
+  background-image: radial-gradient(circle, var(--sk-accent) 0.42rem, transparent 0.47rem);
+  background-repeat: no-repeat;
+  background-size: 1.4rem 1.4rem;
+  background-position: 0.05rem center;
+  transition: background-position 160ms ease, background-color 160ms ease;
+}
+
+:root[data-skin-mode="dark"] .sk-skin-toggle::after {
+  background-color: var(--sk-glass-bg);
+  background-position: calc(100% - 0.05rem) center;
+}
+
+/* ---- Two-zone shell ---- */
+.sk-shell {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.75rem;
+}
+
+.sk-sidebar {
+  align-self: start;
+  position: sticky;
+  top: 5rem;
+  background: var(--sk-bg-card);
+  border: 1px solid var(--sk-border);
+  border-radius: var(--sk-radius-lg);
+  padding: 1rem;
+  box-shadow: var(--sk-shadow-sm);
+}
+
+.sk-main { min-width: 0; }
+
+/* ---- Footer ---- */
+.sk-footer {
+  background: var(--sk-footer-bg);
+  border-top: 1px solid var(--sk-border-light);
+  padding: 1.5rem 1.75rem;
+  color: var(--sk-text-muted);
+  text-align: center;
+}
+
+.sk-footer__copy { margin: 0; }
+
+/* ---- Burger nav toggle + off-canvas drawer (mobile) ---------------------
+ * Burger is hidden on desktop and when JS hasn't enhanced the page. With JS
+ * (`html.sk-nav-ready`) the sidebar becomes an off-canvas drawer the burger
+ * opens; without JS it falls back to an in-flow block below the content. */
+.sk-nav-toggle {
+  display: none;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border: 1px solid var(--sk-border);
+  border-radius: var(--sk-radius, 0.5rem);
+  background: transparent;
+  color: var(--sk-text);
+  cursor: pointer;
+}
+
+.sk-nav-toggle__bars { display: grid; gap: 4px; width: 1.15rem; }
+.sk-nav-toggle__bars span {
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+:root[data-sk-nav="open"] .sk-nav-toggle__bars span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+:root[data-sk-nav="open"] .sk-nav-toggle__bars span:nth-child(2) { opacity: 0; }
+:root[data-sk-nav="open"] .sk-nav-toggle__bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.sk-nav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--sk-overlay-bg, rgba(0, 0, 0, 0.45));
+  backdrop-filter: blur(2px);
+}
+.sk-nav-scrim[hidden] { display: none; }
+
+/* ---- Mobile / narrow: collapse the two-zone shell to a single column ---- */
+@media (max-width: 860px) {
+  .sk-shell {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.25rem 1rem;
+  }
+  .sk-main { order: 1; min-width: 0; }
+  header.sk-header {
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    padding-inline: 1rem;
+  }
+  .sk-topnav { flex-wrap: wrap; gap: 0.5rem 0.75rem; }
+
+  /* No-JS fallback: nav sits below the content, in flow. */
+  .sk-sidebar { order: 2; position: static; top: auto; }
+
+  /* JS-enhanced: burger reveals the sidebar as an off-canvas drawer. */
+  .sk-nav-ready .sk-nav-toggle { display: inline-flex; }
+  .sk-nav-ready .sk-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    width: min(86vw, 320px);
+    height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    border-width: 0 1px 0 0;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 220ms ease;
+    box-shadow: var(--sk-shadow-lg);
+  }
+  .sk-nav-ready[data-sk-nav="open"] .sk-sidebar { transform: translateX(0); }
+}
+
+/* Desktop: drawer machinery is inert (sidebar stays in-grid, scrim hidden). */
+@media (min-width: 861px) {
+  .sk-nav-scrim { display: none; }
+}

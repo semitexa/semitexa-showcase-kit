@@ -1,0 +1,24 @@
+{#
+ # ShowcaseKit feature-card partial (section grid item).
+ #
+ # Variables:
+ #   feature      { slug, title, summary?, href?, opensInNewTab? } REQUIRED
+ #   sectionLabel (string) eyebrow text shown above the title
+ #}
+{% set opensInNewTab = feature.opensInNewTab|default(false) %}
+<a
+  href="{{ feature.href|default('#') }}"
+  class="feature-card feature-card--feature"
+  {% if opensInNewTab %}target="_blank" rel="noopener" aria-label="{{ feature.title }} (opens in new tab)"{% endif %}
+>
+  <div class="feature-card__body">
+    <p class="feature-card__eyebrow">{{ sectionLabel|default('') }}</p>
+    <h3 class="feature-card__title">{{ feature.title }}{% if opensInNewTab %}<span class="sk-external-indicator" aria-hidden="true">↗</span>{% endif %}</h3>
+    {% if feature.summary is defined and feature.summary %}
+      <p class="feature-card__summary">{{ feature.summary }}</p>
+    {% endif %}
+    <div class="feature-card__meta">
+      <span class="feature-card__count">{{ feature.cta|default('Open feature') }}</span>
+    </div>
+  </div>
+</a>

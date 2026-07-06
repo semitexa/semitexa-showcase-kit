@@ -1,0 +1,327 @@
+/* ==========================================================================
+   ShowcaseKit — Feature tree (sidebar navigation)
+   Ported from demo feature-explorer.css. Palette via --sk-* tokens only; the
+   demo's bespoke :root[data-demo-theme="dark"] overrides are dropped because
+   dark mode flows in through the skin's --ui-* tokens.
+   ========================================================================== */
+
+.feature-tree {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.feature-tree__layer {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.2rem 0;
+}
+
+.feature-tree__layer--hidden {
+  display: none;
+}
+
+.feature-tree__layer--active .feature-tree__layer-header {
+  background: var(--sk-accent-faint);
+  border-radius: 16px;
+}
+
+.feature-tree__layer-header {
+  padding: 0.1rem;
+}
+
+.feature-tree__overview-link--layer {
+  align-items: center;
+  padding: 0.7rem 0.75rem;
+}
+
+.feature-tree__layer-sections {
+  display: grid;
+  gap: 0.45rem;
+}
+
+/* --- Section --- */
+
+.feature-tree__section {
+  margin-bottom: 0;
+  padding: 0.25rem;
+  border-radius: 18px;
+  background: var(--sk-glass-bg);
+  border: 1px solid var(--sk-glass-stroke);
+  backdrop-filter: blur(12px) saturate(128%);
+}
+
+.feature-tree__section--active {
+  background: var(--sk-glass-strong);
+  border-color: var(--sk-card-wash-stroke);
+}
+
+.feature-tree__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.1rem;
+  border-radius: 16px;
+  transition: background 100ms ease, color 100ms ease;
+}
+
+.feature-tree__header:hover,
+.feature-tree__header:focus-within {
+  background: var(--sk-hover-bg);
+}
+
+.feature-tree__section--active .feature-tree__header {
+  background: var(--sk-accent-faint);
+}
+
+.feature-tree__overview-link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0.6rem 0.35rem 0.6rem 0.75rem;
+  border-radius: 14px;
+  color: var(--sk-text);
+  text-decoration: none;
+  font-size: 0.98rem;
+  line-height: 1.38;
+  transition: color 100ms ease;
+}
+
+.feature-tree__overview-link:hover,
+.feature-tree__overview-link:focus-visible {
+  text-decoration: none;
+}
+
+.feature-tree__overview-link:focus-visible,
+.feature-tree__link:focus-visible {
+  outline: 2px solid var(--sk-focus-ring);
+  outline-offset: 2px;
+}
+
+.feature-tree__overview-link--active,
+.feature-tree__section--active .feature-tree__overview-link {
+  color: var(--sk-accent);
+}
+
+/* --- Toggle button --- */
+
+.feature-tree__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: center;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--sk-text-muted);
+  transition: color 100ms ease, transform 100ms ease;
+  border-radius: 10px;
+  justify-self: end;
+  margin-right: 0.25rem;
+}
+
+.feature-tree__toggle:hover {
+  color: var(--sk-text);
+}
+
+.feature-tree__section--active .feature-tree__toggle {
+  color: var(--sk-accent);
+}
+
+.feature-tree__toggle-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transform: translateY(-1px);
+  transition: transform 180ms ease;
+}
+
+.feature-tree__toggle[aria-expanded="true"] .feature-tree__toggle-glyph {
+  transform: rotate(180deg) translateY(1px);
+}
+
+/* --- Icon chip --- */
+
+.feature-tree__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.18rem 0.45rem;
+  border-radius: 999px;
+  background: var(--sk-icon-chip-bg);
+  color: var(--sk-ink-blue);
+  font-size: 0.68rem;
+  font-family: var(--sk-font-mono);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.feature-tree__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.38;
+  font-size: 0.98rem;
+}
+
+/* --- Section body / groups --- */
+
+.feature-tree__section-body {
+  display: none;
+  padding: 0.15rem 0 0.35rem;
+}
+
+.feature-tree__section--open .feature-tree__section-body {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.feature-tree__group {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.45rem 0 0.6rem;
+  border-left: 1px solid var(--sk-border-light);
+}
+
+.feature-tree__group-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding-left: 0.75rem;
+}
+
+.feature-tree__group-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sk-accent-dark);
+}
+
+.feature-tree__group-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 0.75rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+/* --- Links --- */
+
+.feature-tree__feature-item {
+  padding: 0;
+}
+
+.feature-tree__feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.feature-tree__link--feature {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.55rem 0.8rem 0.55rem 0;
+}
+
+.feature-tree__link-title {
+  display: block;
+  color: var(--sk-text);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.feature-tree__feature-item--active .feature-tree__link--feature,
+.feature-tree__link--active {
+  color: var(--sk-accent);
+  background: var(--sk-accent-soft);
+  box-shadow: inset 3px 0 0 var(--sk-accent-rail);
+}
+
+.feature-tree__feature-item--active .feature-tree__link-title,
+.feature-tree__link--active .feature-tree__link-title {
+  color: var(--sk-accent);
+}
+
+.feature-tree__item {
+  padding: 0;
+}
+
+.feature-tree__link {
+  display: block;
+  padding: 0.5rem 0.85rem 0.5rem 0.75rem;
+  font-size: 0.94rem;
+  color: var(--sk-text-muted);
+  text-decoration: none;
+  transition: background 100ms ease, color 100ms ease;
+  line-height: 1.45;
+  overflow-wrap: break-word;
+  word-break: normal;
+  border-radius: 14px;
+  margin: 0.1rem 0;
+}
+
+.feature-tree__link:hover {
+  background: var(--sk-hover-bg);
+  color: var(--sk-text);
+  text-decoration: none;
+}
+
+.feature-tree__item--active .feature-tree__link {
+  color: var(--sk-accent);
+  background: var(--sk-accent-soft);
+  font-weight: 500;
+  box-shadow: inset 3px 0 0 var(--sk-accent-rail);
+}
+
+.sk-external-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.3rem;
+  font-size: 0.82em;
+  line-height: 1;
+  color: var(--sk-accent);
+  opacity: 0.82;
+}
+
+/* --- Sub-item bullet markers (parity with prod framework.semitexa.com) ---
+ * Leaf navigation links — both the feature-links layer (`--feature`) and the
+ * expandable section group lists — get a small dot marker before the label.
+ * Shared in the kit, so every showcase site shows them. The dot uses
+ * currentColor, so it turns accent on the active item automatically. */
+.feature-tree__link--feature,
+.feature-tree__group-list .feature-tree__link {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.feature-tree__link--feature::before,
+.feature-tree__group-list .feature-tree__link::before {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 5px;
+  margin-top: 0.6em;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+}

@@ -1,0 +1,117 @@
+/*
+ * ShowcaseKit semantic token layer (approach A).
+ *
+ * The kit's structural CSS reads `--sk-*` tokens only. Each `--sk-*` token is
+ * an ALIAS or DERIVATION of the standard Semitexa `--ui-*` skin contract — so
+ * the ACTIVE SKIN alone drives the palette: moss on platform.semitexa.test,
+ * the demo palette on framework.semitexa.test. No per-site class prefixes, no
+ * baked colours, no bespoke light/dark block — light/dark flows in through the
+ * `--ui-*` tokens the theme system already switches.
+ *
+ * Where the demo had a bespoke semantic with no direct `--ui-*` equivalent
+ * (glass, header/footer wash, overlay, scrollbar), we DERIVE it here from the
+ * `--ui-*` base via color-mix/transparency rather than widening the contract.
+ */
+:root {
+  /* ---- Accents ---- */
+  --sk-accent: var(--ui-accent-brand);
+  --sk-accent-contrast: var(--ui-text-on-accent);
+  --sk-accent-light: color-mix(in srgb, var(--ui-accent-brand) 72%, white);
+  --sk-accent-dark: color-mix(in srgb, var(--ui-accent-brand) 78%, black);
+  /* Accent tints for hover/active fills + inset rails (demo used rgba(accent, .06–.28)). */
+  --sk-accent-faint: color-mix(in srgb, var(--ui-accent-brand) 7%, transparent);
+  --sk-accent-soft: color-mix(in srgb, var(--ui-accent-brand) 12%, transparent);
+  --sk-accent-rail: color-mix(in srgb, var(--ui-accent-brand) 30%, transparent);
+  --sk-focus-ring: color-mix(in srgb, var(--ui-accent-brand) 40%, transparent);
+
+  /* ---- Text ---- */
+  --sk-text: var(--ui-text-primary);
+  --sk-text-muted: var(--ui-text-muted);
+  --sk-text-light: color-mix(in srgb, var(--ui-text-muted) 70%, transparent);
+
+  /* ---- Decorative inks (demo used blue/green secondary accents) ---- */
+  --sk-ink-blue: var(--ui-state-info);
+  --sk-ink-green: var(--ui-state-success);
+
+  /* ---- Surfaces ---- */
+  --sk-bg: var(--ui-surface-page);
+  --sk-bg-alt: var(--ui-surface-sunken);
+  --sk-bg-card: var(--ui-surface-panel);
+  --sk-elevated-bg: var(--ui-surface-raised);
+  --sk-drawer-bg: var(--ui-surface-raised);
+  --sk-input-bg: var(--ui-surface-panel);
+  /* Code blocks use the fixed dark `.code-token--*` editor palette (light text),
+   * so the surface must stay dark in BOTH light and dark modes — otherwise the
+   * light tokens render on a light cream surface and vanish. */
+  --sk-code-bg: #0f141c;
+  --sk-surface-soft: color-mix(in srgb, var(--ui-surface-panel) 84%, transparent);
+  --sk-surface-muted: color-mix(in srgb, var(--ui-surface-panel) 72%, transparent);
+  --sk-hover-bg: color-mix(in srgb, var(--ui-accent-brand) 8%, transparent);
+  /* Translucent card wash (demo feature-card used a panel gradient over the page). */
+  --sk-card-wash: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-surface-panel) 36%, transparent),
+    color-mix(in srgb, var(--ui-surface-sunken) 28%, transparent)
+  );
+  --sk-card-wash-stroke: color-mix(in srgb, var(--ui-surface-raised) 28%, transparent);
+  /* Section-header wash (demo used a diagonal panel→sunken gradient). */
+  --sk-section-header-bg: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ui-surface-panel) 96%, transparent),
+    color-mix(in srgb, var(--ui-surface-sunken) 90%, transparent)
+  );
+  --sk-icon-chip-bg: color-mix(in srgb, var(--ui-text-muted) 10%, transparent);
+
+  /* ---- Borders ---- */
+  --sk-border: var(--ui-border-subtle);
+  --sk-border-light: color-mix(in srgb, var(--ui-border-subtle) 45%, transparent);
+  --sk-border-strong: var(--ui-border-strong);
+
+  /* ---- Glassmorphism (derived: translucent panel + blur) ---- */
+  --sk-glass-bg: color-mix(in srgb, var(--ui-surface-panel) 46%, transparent);
+  --sk-glass-strong: color-mix(in srgb, var(--ui-surface-panel) 62%, transparent);
+  --sk-glass-stroke: color-mix(in srgb, var(--ui-surface-raised) 34%, transparent);
+  --sk-glass-shadow: var(--ui-shadow-md);
+  --sk-glass-blur: blur(18px) saturate(135%);
+
+  /* ---- Header / footer wash (derived gradients off page+panel) ---- */
+  --sk-header-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-surface-panel) 56%, transparent),
+    color-mix(in srgb, var(--ui-surface-page) 40%, transparent)
+  );
+  --sk-header-border: color-mix(in srgb, var(--ui-surface-raised) 30%, transparent);
+  --sk-footer-bg: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-surface-panel) 34%, transparent),
+    color-mix(in srgb, var(--ui-surface-sunken) 56%, transparent)
+  );
+
+  /* ---- Overlay / scrim ---- */
+  --sk-overlay-bg: color-mix(in srgb, var(--ui-text-primary) 34%, transparent);
+  --sk-tooltip-bg: var(--ui-text-primary);
+  --sk-tooltip-text: var(--ui-surface-page);
+
+  /* ---- Scrollbar (derived from accent) ---- */
+  --sk-scrollbar-track: color-mix(in srgb, var(--ui-text-muted) 14%, transparent);
+  --sk-scrollbar-thumb: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-accent-brand) 78%, transparent),
+    var(--ui-accent-brand)
+  );
+  --sk-scrollbar-thumb-hover: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ui-accent-brand) 92%, white),
+    var(--ui-accent-brand)
+  );
+
+  /* ---- Shape & type (straight aliases) ---- */
+  --sk-shadow-sm: var(--ui-shadow-sm);
+  --sk-shadow-md: var(--ui-shadow-md);
+  --sk-shadow-lg: var(--ui-shadow-lg);
+  --sk-radius: var(--ui-radius-md);
+  --sk-radius-lg: var(--ui-radius-lg);
+  --sk-font: var(--ui-font-sans);
+  --sk-font-ui: var(--ui-font-sans);
+  --sk-font-mono: var(--ui-font-mono);
+}

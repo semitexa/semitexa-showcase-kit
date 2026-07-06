@@ -1,0 +1,92 @@
+{#
+ # ShowcaseKit base layout — the shared `home → section → feature` shell for
+ # docs-backed showcase sites. Extends the standard theme-base marketing base
+ # (so head/fonts/skin-mode toggle come from the framework, NOT a bespoke
+ # demo head). Palette is 100% skin-driven: structural CSS reads `--sk-*`,
+ # which alias `--ui-*`, which the active skin defines (moss here, demo there).
+ #
+ # Consuming sites override the chrome blocks (sk_brand / sk_topnav /
+ # sk_sidebar / sk_footer / sk_fonts) and fill {% block showcase_main %}.
+ # Sidebar reads `sections`; `section` / `feature` drive active-item state.
+ #}
+{% extends '@project-layouts-theme-base/layouts/marketing.html.twig' %}
+
+{% block head %}
+    {# Native asset wiring: pull the kit's whole manifest (css/js) into the
+       AssetCollector; emitted by asset_head()/asset_body() in the chain. #}
+    {{ require_module('ShowcaseKit') }}
+    {% embed '@project-layouts-theme-base/partials/head/marketing-head.html.twig' with {
+        site_title: sk_site_title|default('Showcase')
+    } only %}
+        {% block fonts %}
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+        {% endblock %}
+    {% endembed %}
+    {# Pre-paint colour mode using the standard skin-mode contract. #}
+    <script>
+      (function () {
+        try {
+          var mode = window.localStorage.getItem('semitexa_skin_mode');
+          if (mode !== 'light' && mode !== 'dark') {
+            mode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-skin-mode', mode);
+        } catch (e) {
+          document.documentElement.setAttribute('data-skin-mode', 'light');
+        }
+      })();
+    </script>
+{% endblock %}
+
+{% block body_attrs %} class="{{ sk_body_class|default('') }}" data-theme-label-dark="Dark mode" data-theme-label-light="Light mode"{% endblock %}
+
+{% block body %}
+    {% set _cur_section = section.key|default(feature.section.key|default(null)) %}
+    {% set _cur_slug = feature.slug|default(null) %}
+
+    <header class="sk-header">
+        <button class="sk-nav-toggle" type="button" data-sk-nav-toggle
+                aria-label="Open navigation" aria-controls="sk-sidebar" aria-expanded="false">
+            <span class="sk-nav-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
+        {% block sk_brand %}
+            <a class="sk-brand" href="/">
+                <span class="sk-brand__mark">◆</span>
+                <span class="sk-brand__text">Showcase</span>
+            </a>
+        {% endblock %}
+        <nav class="sk-topnav" aria-label="Primary">
+            {% block sk_topnav %}{% endblock %}
+        </nav>
+        <button class="sk-skin-toggle" type="button" data-skin-toggle aria-label="Toggle colour mode">
+            <span data-skin-text>Dark mode</span>
+        </button>
+    </header>
+
+    <div class="sk-nav-scrim" data-sk-nav-close hidden></div>
+
+    <div class="sk-shell">
+        <aside class="sk-sidebar" id="sk-sidebar" aria-label="Navigation">
+            {% block sk_sidebar %}{% endblock %}
+        </aside>
+
+        <main class="sk-main">
+            {% block showcase_main %}{% endblock %}
+        </main>
+    </div>
+
+    <footer class="sk-footer">
+        {% block sk_footer %}<p class="sk-footer__copy">© 2026 Semitexa</p>{% endblock %}
+    </footer>
+
+    {# Kit CSS auto-loads via require_module()+asset_head(); JS stays explicit
+       (asset_body() does not emit the kit's plain module scripts). Toggle +
+       sidebar tree are chrome shared by every kit page. #}
+    <script src="/assets/ShowcaseKit/js/skin-toggle.js" defer></script>
+    <script src="/assets/ShowcaseKit/js/feature-tree.js" defer></script>
+    <script src="/assets/ShowcaseKit/js/nav-toggle.js" defer></script>
+    {% block sk_body_scripts %}{% endblock %}
+    {{ asset_body() }}
+{% endblock %}

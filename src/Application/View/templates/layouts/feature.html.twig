@@ -1,0 +1,198 @@
+{#
+ # ShowcaseKit feature page — L1/L2/L3 progressive-reveal feature detail.
+ #
+ # Extends the kit base layout (`showcase.html.twig`). Reproduces the demo's
+ # `home → section → feature` feature detail: an always-visible L1 (header,
+ # summary, optional preview/highlights/document body), a learn-more disclosure
+ # that reveals the L2 expandable section (source code / extra content / related),
+ # and a deep-dive disclosure that opens the L3 drawer (how/why/key concepts).
+ #
+ # Palette is 100% skin-driven via --sk-* tokens. Interactivity is the kit
+ # disclosure JS (data-disclosure-trigger / data-expandable / data-drawer).
+ #
+ # See CONTRACT.md for the full data contract.
+ #}
+{# Kit CSS auto-loads via require_module() in the base layout; feature-only JS
+   (L2/L3 disclosure) stays explicit. #}
+{% extends '@project-layouts-ShowcaseKit/layouts/showcase.html.twig' %}
+
+{% block sk_body_scripts %}
+  <script src="/assets/ShowcaseKit/js/disclosure.js" defer></script>
+{% endblock %}
+
+{% block sk_sidebar %}
+  {% include '@project-layouts-ShowcaseKit/partials/feature-tree.html.twig' with {
+    sections: sections|default([]),
+    layers: layers|default(null),
+    currentSection: section|default(null),
+    currentSlug: slug|default(null),
+    navMode: navMode|default(null),
+    activeLayerKey: activeLayerKey|default(null),
+  } only %}
+{% endblock %}
+
+{% block showcase_main %}
+  {% set domKey = ((section|default('feature')) ~ '-' ~ (slug|default('detail')))|lower|replace({' ': '-', '/': '-', '\\': '-', '_': '-'}) %}
+  {% set resolvedSectionLabel = sectionLabel|default((section|default(''))|title) %}
+
+  {% set hasL2 = (sourceCode is defined and sourceCode|length > 0)
+    or (l2Content is defined and l2Content)
+    or (relatedFeatures is defined and relatedFeatures|length > 0) %}
+  {% set hasL3 = (l3Content is defined and l3Content)
+    or (explanation is defined and (
+      (explanation.how is defined and explanation.how)
+      or (explanation.why is defined and explanation.why)
+      or (explanation.keywords is defined and explanation.keywords|length > 0)
+    )) %}
+
+  <article class="feature-detail" data-section="{{ section|default('') }}" data-slug="{{ slug|default('') }}">
+
+    {# ---- L1: always visible ---- #}
+    <section class="feature-detail__l1">
+      <header class="feature-detail__header">
+        <div class="feature-detail__header-copy">
+          {% if backHref is defined and backHref %}
+            <a href="{{ backHref }}" class="feature-detail__back">← {{ resolvedSectionLabel }}</a>
+          {% endif %}
+          {% if resolvedSectionLabel %}
+            <p class="feature-detail__eyebrow">{{ resolvedSectionLabel|upper }} FEATURE</p>
+          {% endif %}
+          {# Optional title prefix (e.g. a glyph before the H1). Empty by default,
+             so consumers that don't override it render the bare title. #}
+          <h1 class="feature-detail__title">{% block feature_title_prefix %}{% endblock %}<span>{{ title|default('Feature') }}</span></h1>
+          {% if summary is defined and summary %}
+            <p class="feature-detail__entry-line">{{ summary }}</p>
+          {% endif %}
+        </div>
+      </header>
+
+      {# Optional inline L1 context panel (e.g. a what/how/why orientation block).
+         Empty by default; consumers override to inject their own content. #}
+      {% block feature_l1_context %}{% endblock %}
+
+      {% if previewHtml is defined and previewHtml %}
+        <div class="feature-detail__preview" aria-label="Result preview">
+          {{ previewHtml|raw }}
+        </div>
+      {% endif %}
+
+      {% if highlights is defined and highlights|length > 0 %}
+        <div class="feature-detail__highlights">
+          {% for highlight in highlights %}
+            {# A highlight is either a plain string or a { label, definition } map.
+               When a definition is present, render a self-contained tooltip chip
+               (plain markup + title + data-* for progressive enhancement);
+               otherwise render the plain chip exactly as before. #}
+            {% set highlightLabel = highlight.label is defined ? highlight.label : highlight %}
+            {% set highlightDefinition = highlight.definition is defined ? highlight.definition : null %}
+            {% if highlightDefinition %}
+              <span class="feature-detail__highlight feature-detail__highlight--tooltip" tabindex="0" title="{{ highlightDefinition }}" data-highlight-definition="{{ highlightDefinition }}">{{ highlightLabel }}</span>
+            {% else %}
+              <span class="feature-detail__highlight feature-detail__highlight--plain">{{ highlightLabel }}</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if documentBodyHtml is defined and documentBodyHtml %}
+        <div class="feature-detail__document-body">
+          {{ documentBodyHtml|raw }}
+        </div>
+      {% endif %}
+    </section>
+
+    {# ---- learn-more disclosure → reveals L2 ---- #}
+    {% if hasL2 %}
+      {% include '@project-layouts-ShowcaseKit/partials/disclosure-prompt.html.twig' with {
+        label: learnMoreLabel|default('Try it yourself →'),
+        variant: 'learnMore',
+        target: 'l2-' ~ domKey,
+      } only %}
+
+      <div id="l2-{{ domKey }}" class="expandable-section" data-expanded="false" data-expandable>
+        <div class="expandable-section__inner">
+          <div class="feature-detail__l2">
+
+            {% if sourceCode is defined and sourceCode|length > 0 %}
+              {% for tab in sourceCode %}
+                {{ sk_code_block(tab.code|default(''), tab.lang|default(tab.note|default(null)), tab.label|default(tab.title|default('Source'))) }}
+              {% endfor %}
+            {% endif %}
+
+            {% if l2Content is defined and l2Content %}
+              <div class="feature-detail__l2-extra">{{ l2Content|raw }}</div>
+            {% endif %}
+
+            {% if relatedFeatures is defined and relatedFeatures|length > 0 %}
+              <div class="feature-detail__related">
+                <h3 class="feature-detail__related-heading">Related features</h3>
+                <ul class="feature-detail__related-list">
+                  {% for related in relatedFeatures %}
+                    <li><a href="{{ related.href|default('#') }}">{{ related.label|default(related.title|default(related.href)) }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            {% if hasL3 %}
+              {% include '@project-layouts-ShowcaseKit/partials/disclosure-prompt.html.twig' with {
+                label: deepDiveLabel|default('Under the hood →'),
+                variant: 'deepDive',
+                target: 'l3-' ~ domKey,
+              } only %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {# ---- L3: deep-dive drawer ---- #}
+    {% if hasL3 %}
+      <div id="l3-{{ domKey }}" class="deep-dive-drawer" data-expanded="false" data-drawer>
+        <div class="deep-dive-drawer__overlay" data-drawer-close></div>
+        <div class="deep-dive-drawer__panel">
+          <button class="deep-dive-drawer__close" type="button" aria-label="Close details panel" data-drawer-close>&times;</button>
+          <div class="deep-dive-drawer__content">
+            <div class="feature-detail__l3">
+              {% if explanation is defined %}
+                {% if explanation.how is defined and explanation.how %}
+                  <section class="feature-detail__l3-section">
+                    <h3>How it works</h3>
+                    <p>{{ explanation.how }}</p>
+                  </section>
+                {% endif %}
+                {% if explanation.why is defined and explanation.why %}
+                  <section class="feature-detail__l3-section">
+                    <h3>Why it matters</h3>
+                    <p>{{ explanation.why }}</p>
+                  </section>
+                {% endif %}
+                {% if explanation.keywords is defined and explanation.keywords|length > 0 %}
+                  <section class="feature-detail__l3-section">
+                    <h3>Key concepts</h3>
+                    <dl class="feature-detail__keywords">
+                      {% for kw in explanation.keywords %}
+                        <dt>{{ kw.term }}</dt>
+                        <dd>{{ kw.definition }}</dd>
+                      {% endfor %}
+                    </dl>
+                  </section>
+                {% endif %}
+              {% endif %}
+
+              {% if l3Content is defined and l3Content %}
+                <div class="feature-detail__l3-extra">{{ l3Content|raw }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+  </article>
+
+  {# Optional aside / supplementary block below the feature article (e.g. a
+     donate or support callout). Empty by default. #}
+  {% block feature_aside %}{% endblock %}
+{% endblock %}
+
