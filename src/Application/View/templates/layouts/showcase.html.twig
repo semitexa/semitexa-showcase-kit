@@ -84,9 +84,9 @@
     {# Kit CSS auto-loads via require_module()+asset_head(); JS stays explicit
        (asset_body() does not emit the kit's plain module scripts). Toggle +
        sidebar tree are chrome shared by every kit page. #}
-    <script src="/assets/ShowcaseKit/js/skin-toggle.js" defer></script>
-    <script src="/assets/ShowcaseKit/js/feature-tree.js" defer></script>
-    <script src="/assets/ShowcaseKit/js/nav-toggle.js" defer></script>
+    <script src="{{ asset('js/skin-toggle.js', 'ShowcaseKit') }}" defer></script>
+    <script src="{{ asset('js/feature-tree.js', 'ShowcaseKit') }}" defer></script>
+    <script src="{{ asset('js/nav-toggle.js', 'ShowcaseKit') }}" defer></script>
     {% block sk_body_scripts %}{% endblock %}
     {{ asset_body() }}
 {% endblock %}
