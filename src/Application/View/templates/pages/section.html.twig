@@ -12,8 +12,8 @@
 
 {% block head %}
   {{ parent() }}
-  <link rel="stylesheet" href="/assets/ShowcaseKit/css/feature.css">
-  <link rel="stylesheet" href="/assets/ShowcaseKit/css/nav.css">
+  <link rel="stylesheet" href="{{ asset('css/feature.css', 'ShowcaseKit') }}">
+  <link rel="stylesheet" href="{{ asset('css/nav.css', 'ShowcaseKit') }}">
 {% endblock %}
 
 {% block sk_sidebar %}
