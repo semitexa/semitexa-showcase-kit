@@ -21,5 +21,9 @@
         "feature-pages",
         "docs-site"
     ],
-    "homepage": "https://semitexa.com"
+    "homepage": "https://semitexa.com",
+    "require": {
+        "semitexa/core": "*",
+        "semitexa/ssr": "*"
+    }
 }
