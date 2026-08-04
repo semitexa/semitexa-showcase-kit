@@ -23,6 +23,7 @@
     ],
     "homepage": "https://semitexa.com",
     "require": {
+        "php": "^8.4",
         "semitexa/core": "*",
         "semitexa/ssr": "*"
     }
