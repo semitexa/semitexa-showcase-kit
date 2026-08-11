@@ -17,7 +17,8 @@
 {% extends '@project-layouts-ShowcaseKit/layouts/showcase.html.twig' %}
 
 {% block sk_body_scripts %}
-  <script src="{{ asset('js/disclosure.js', 'ShowcaseKit') }}" defer></script>
+  <script src="{{ asset('js/disclosure.js', 'showcase-kit') }}" defer></script>
+  <script src="{{ asset('js/code-block.js', 'showcase-kit') }}" defer></script>
 {% endblock %}
 
 {% block sk_sidebar %}
@@ -113,10 +114,10 @@
         <div class="expandable-section__inner">
           <div class="feature-detail__l2">
 
+            {# One block with a tab strip, not one flat block per source — the
+               sources of a feature are slices of the same example. #}
             {% if sourceCode is defined and sourceCode|length > 0 %}
-              {% for tab in sourceCode %}
-                {{ sk_code_block(tab.code|default(''), tab.lang|default(tab.note|default(null)), tab.label|default(tab.title|default('Source'))) }}
-              {% endfor %}
+              {{ sk_code_tabs(sourceCode, domKey) }}
             {% endif %}
 
             {% if l2Content is defined and l2Content %}

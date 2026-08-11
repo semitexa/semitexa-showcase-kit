@@ -10,8 +10,13 @@
    theme, NOT the site palette, so they stay literal (flagged in the report).
    ========================================================================== */
 
+/* `.code-block` is the outer wrapper (JS mount point); `__frame` carries the
+   editor surface — same split as the demo component. */
 .code-block {
   margin-bottom: 1.75rem;
+}
+
+.code-block__frame {
   border: 1px solid var(--sk-glass-stroke);
   border-radius: 22px;
   overflow: hidden;
@@ -20,6 +25,122 @@
     0 24px 48px rgba(0, 0, 0, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(18px) saturate(135%);
+}
+
+/* --- Masthead: a programming quote, picked per render --------------------- */
+.code-block__masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 1.15rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02), transparent);
+}
+
+.code-block__intro {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.code-block__quote-line {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.code-block__quote-author {
+  margin: 0;
+  flex: 0 0 auto;
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sk-accent, #f7b267);
+}
+
+.code-block__headline {
+  min-width: 0;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: #f8eee4;
+}
+
+/* --- Tab strip: shown only when a feature has more than one source -------- */
+.code-block__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  padding: 0.95rem 1.1rem 0;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  overflow-x: hidden;
+}
+
+.code-block__tab {
+  display: grid;
+  gap: 0.2rem;
+  flex: 1 1 12rem;
+  min-width: 0;
+  padding: 0.8rem 0.95rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  background: rgba(255, 255, 255, 0.03);
+  color: #b8c3d6;
+  font-size: 0.8125rem;
+  text-align: left;
+  cursor: pointer;
+  transition: color 120ms ease, background 120ms ease, transform 120ms ease, border-color 120ms ease;
+}
+
+.code-block__tab:hover {
+  color: #f6eadf;
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
+}
+
+.code-block__tab:focus-visible {
+  outline: 2px solid var(--sk-accent, #f59e0b);
+  outline-offset: -2px;
+}
+
+.code-block__tab--active {
+  color: #fff2e6;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(245, 158, 11, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.code-block__tab-title {
+  font-family: var(--sk-font-mono);
+  font-size: 0.83rem;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.code-block__tab-note {
+  font-size: 0.71rem;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  color: #8ea0bb;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.code-block__panel {
+  display: none;
+}
+
+.code-block__panel--active {
+  display: block;
 }
 
 .code-block__header {
@@ -49,9 +170,49 @@
   color: #8ea0bb;
 }
 
+.code-block__copy {
+  padding: 0.42rem 0.82rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  color: #d7dfeb;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+}
+
+.code-block__copy:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff5eb;
+}
+
+.code-block__copy:focus-visible {
+  outline: 2px solid var(--sk-accent, #f59e0b);
+  outline-offset: 2px;
+}
+
+/* Raw, un-highlighted source the copy button reads from. Visually hidden
+   rather than display:none so the value stays selectable for the fallback
+   execCommand('copy') path. */
+.code-block__raw-source {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: pre;
+  border: 0;
+}
+
+/* No horizontal padding: the line gutter supplies the left inset and
+   `__line-code` the right one, so the hover highlight spans the full row. */
 .code-block__pre {
   margin: 0;
-  padding: 1rem 1.25rem;
+  padding: 0.7rem 0;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -65,6 +226,31 @@
   color: #e2e8f0;
   white-space: pre;
   tab-size: 4;
+}
+
+/* --- Line gutter (emitted by CodeHighlighter::highlightPhpLines) --------- */
+.code-block__line {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  align-items: baseline;
+  min-height: 1.75rem;
+}
+
+.code-block__line:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.code-block__line-number {
+  display: inline-flex;
+  justify-content: flex-end;
+  padding: 0 1rem 0 0.75rem;
+  color: #5f6f88;
+  user-select: none;
+}
+
+.code-block__line-code {
+  display: block;
+  padding-right: 1.3rem;
 }
 
 /* --- Syntax highlight palette (fixed editor theme, skin-independent) --- */
@@ -86,5 +272,17 @@
 @media (max-width: 640px) {
   .code-block__code {
     font-size: 0.78rem;
+  }
+
+  .code-block__line {
+    grid-template-columns: 3rem minmax(0, 1fr);
+  }
+
+  .code-block__line-number {
+    padding-right: 0.7rem;
+  }
+
+  .code-block__headline {
+    font-size: 1.05rem;
   }
 }
