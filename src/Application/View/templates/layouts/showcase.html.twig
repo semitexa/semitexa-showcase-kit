@@ -14,7 +14,7 @@
 {% block head %}
     {# Native asset wiring: pull the kit's whole manifest (css/js) into the
        AssetCollector; emitted by asset_head()/asset_body() in the chain. #}
-    {{ require_module('ShowcaseKit') }}
+    {{ require_module('showcase-kit') }}
     {% embed '@project-layouts-theme-base/partials/head/marketing-head.html.twig' with {
         site_title: sk_site_title|default('Showcase')
     } only %}
@@ -84,9 +84,9 @@
     {# Kit CSS auto-loads via require_module()+asset_head(); JS stays explicit
        (asset_body() does not emit the kit's plain module scripts). Toggle +
        sidebar tree are chrome shared by every kit page. #}
-    <script src="{{ asset('js/skin-toggle.js', 'ShowcaseKit') }}" defer></script>
-    <script src="{{ asset('js/feature-tree.js', 'ShowcaseKit') }}" defer></script>
-    <script src="{{ asset('js/nav-toggle.js', 'ShowcaseKit') }}" defer></script>
+    <script src="{{ asset('js/skin-toggle.js', 'showcase-kit') }}" defer></script>
+    <script src="{{ asset('js/feature-tree.js', 'showcase-kit') }}" defer></script>
+    <script src="{{ asset('js/nav-toggle.js', 'showcase-kit') }}" defer></script>
     {% block sk_body_scripts %}{% endblock %}
     {{ asset_body() }}
 {% endblock %}
