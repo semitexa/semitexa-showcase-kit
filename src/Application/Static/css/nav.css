@@ -1,7 +1,7 @@
 /* ==========================================================================
    ShowcaseKit — Feature tree (sidebar navigation)
-   Ported from demo feature-explorer.css. Palette via --sk-* tokens only; the
-   demo's bespoke :root[data-demo-theme="dark"] overrides are dropped because
+   Ported from demo feature-explorer.css. Palette via --sk-* tokens only: the
+   per-selector dark overrides that file used to carry are dropped, because
    dark mode flows in through the skin's --ui-* tokens.
    ========================================================================== */
 

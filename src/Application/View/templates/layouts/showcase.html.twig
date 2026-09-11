@@ -24,20 +24,12 @@
             <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
         {% endblock %}
     {% endembed %}
-    {# Pre-paint colour mode using the standard skin-mode contract. #}
-    <script>
-      (function () {
-        try {
-          var mode = window.localStorage.getItem('semitexa_skin_mode');
-          if (mode !== 'light' && mode !== 'dark') {
-            mode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-          }
-          document.documentElement.setAttribute('data-skin-mode', mode);
-        } catch (e) {
-          document.documentElement.setAttribute('data-skin-mode', 'light');
-        }
-      })();
-    </script>
+    {# No pre-paint script here. The marketing head embedded above already
+       includes theme-switcher.html.twig, and this block carried a second,
+       hand-copied version of it — emitted twice on every page, and the second
+       one after the stylesheets, which is past the point a pre-paint script is
+       for. The docblock at the top of this file already said skin-mode comes
+       from the framework; now it does. #}
 {% endblock %}
 
 {% block body_attrs %} class="{{ sk_body_class|default('') }}" data-theme-label-dark="Dark mode" data-theme-label-light="Light mode"{% endblock %}
