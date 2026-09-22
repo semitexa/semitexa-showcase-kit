@@ -10,12 +10,6 @@
  #}
 {% extends '@project-layouts-ShowcaseKit/layouts/showcase.html.twig' %}
 
-{% block head %}
-  {{ parent() }}
-  <link rel="stylesheet" href="{{ asset('css/feature.css', 'showcase-kit') }}">
-  <link rel="stylesheet" href="{{ asset('css/nav.css', 'showcase-kit') }}">
-{% endblock %}
-
 {% block sk_sidebar %}
   {% include '@project-layouts-ShowcaseKit/partials/feature-tree.html.twig' with {
     sections: sections|default([]),
