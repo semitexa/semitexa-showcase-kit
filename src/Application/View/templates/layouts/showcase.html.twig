@@ -18,11 +18,12 @@
     {% embed '@project-layouts-theme-base/partials/head/marketing-head.html.twig' with {
         site_title: sk_site_title|default('Showcase')
     } only %}
-        {% block fonts %}
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-        {% endblock %}
+        {# IBM Plex Sans is self-hosted now: css/fonts.css carries the
+           @font-face rules and rides in with the rest of the kit manifest,
+           so the critical path no longer waits on a stylesheet from
+           fonts.googleapis.com. The block stays for consumers that want to
+           add a face of their own. #}
+        {% block fonts %}{% endblock %}
     {% endembed %}
     {# No pre-paint script here. The marketing head embedded above already
        includes theme-switcher.html.twig, and this block carried a second,
