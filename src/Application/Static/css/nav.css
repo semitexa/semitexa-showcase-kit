@@ -160,7 +160,9 @@
   padding: 0.18rem 0.45rem;
   border-radius: 999px;
   background: var(--sk-icon-chip-bg);
-  color: var(--sk-ink-blue);
+  /* Text, not --sk-ink-blue: that is --ui-state-info, a fill colour, and as
+     10.88px text on the chip it reads 3.59:1 in light mode, under AA's 4.5:1. */
+  color: var(--sk-text);
   font-size: 0.68rem;
   font-family: var(--sk-font-mono);
   font-weight: 700;
@@ -285,7 +287,8 @@
 }
 
 .feature-tree__item--active .feature-tree__link {
-  color: var(--sk-accent);
+  /* --sk-accent on --sk-accent-soft reads 4.28:1 in light mode, under AA's 4.5:1. */
+  color: var(--sk-accent-dark);
   background: var(--sk-accent-soft);
   font-weight: 500;
   box-shadow: inset 3px 0 0 var(--sk-accent-rail);

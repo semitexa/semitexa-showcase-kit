@@ -17,7 +17,9 @@
   --sk-accent: var(--ui-accent-brand);
   --sk-accent-contrast: var(--ui-text-on-accent);
   --sk-accent-light: color-mix(in srgb, var(--ui-accent-brand) 72%, white);
-  --sk-accent-dark: color-mix(in srgb, var(--ui-accent-brand) 78%, black);
+  /* Text on the page in both modes: mixed toward the text colour, not black, which left it
+     #5e6cc7 on the dark surfaces (3.56:1). */
+  --sk-accent-dark: color-mix(in srgb, var(--ui-accent-brand) 78%, var(--ui-text-primary));
   /* Accent tints for hover/active fills + inset rails (demo used rgba(accent, .06–.28)). */
   --sk-accent-faint: color-mix(in srgb, var(--ui-accent-brand) 7%, transparent);
   --sk-accent-soft: color-mix(in srgb, var(--ui-accent-brand) 12%, transparent);
