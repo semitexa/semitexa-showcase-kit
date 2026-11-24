@@ -257,9 +257,10 @@
   box-shadow: inset 3px 0 0 var(--sk-accent-rail);
 }
 
+/* On the accent-soft fill the bare accent is 4.27:1 in light; the text variant passes in both modes. */
 .feature-tree__feature-item--active .feature-tree__link-title,
 .feature-tree__link--active .feature-tree__link-title {
-  color: var(--sk-accent);
+  color: var(--sk-accent-dark);
 }
 
 .feature-tree__item {
